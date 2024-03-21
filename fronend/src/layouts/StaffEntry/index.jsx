@@ -1,22 +1,6 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -25,19 +9,21 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
 import MDButton from "components/MDButton";
 //modal
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 import { Autocomplete } from "@mui/material";
+// components
+import StaffEntryTable from "./data/StaffEntryTable";
 function StaffEntry() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -50,7 +36,7 @@ function StaffEntry() {
     email: "",
     domain: "",
     department: "",
-    number: ""
+    number: "",
   });
   const handleSubmit = async () => {
     console.log(formData);
@@ -58,19 +44,17 @@ function StaffEntry() {
       const response = await fetch(`http://localhost:5001/staffAdd`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
       const result = await response.json();
       alert("success");
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     }
     setOpen(false);
-
-  }
+  };
   const Department = [
     { label: "Computer science and engineering", value: "cse" },
     { label: "Information Technology", value: "IT" },
@@ -82,7 +66,7 @@ function StaffEntry() {
     { label: "Mechanical Engineering", value: "MECH" },
     { label: "Computer Science and Buisness Systems", value: "CSBS" },
     { label: "Master of Buisness Administration", value: "MBA" },
-    { label: "Master of Computer Administration", value: "MCA" }
+    { label: "Master of Computer Administration", value: "MCA" },
   ];
   const handleDelete = async (ID) => {
     try {
@@ -103,33 +87,9 @@ function StaffEntry() {
       } catch (error) {
         console.error("Error fetching test data:", error);
       }
-    }
+    };
     staffFetch();
-  }, [staffData])
-  const columns=[
-    { Header: "Name", accessor: "name", width: "45%", align: "left" },
-    { Header: "Staff ID", accessor: "id", align: "left" },
-    { Header: "email", accessor: "email", align: "center" },
-    { Header: "Domain", accessor: "domain", align: "center" },
-    { Header: "DOJ", accessor: "doj", align: "center" },
-    { Header: "Action", accessor: "action", align: "center" },
-  ]
-
-  
-  const rows = staffData.map(data => ({
-    name: data.staff_name,
-    id:data.staff_id,
-    email: data.staff_email, // Add logic to calculate difficulty if neede
-    domain: data.Domain,
-    doj: data.DOJ, // Add logic to calculate creation date if needed
-    action: (
-      <MDBox>
-        <MDButton  onClick={() => handleDelete(data.staff_id)} color="error">
-          Delete
-        </MDButton>
-      </MDBox>
-    ),
-  }));
+  }, [staffData]);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -158,13 +118,7 @@ function StaffEntry() {
                 </MDButton>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+                <StaffEntryTable staffData={staffData} />
               </MDBox>
               <Dialog maxWidth="lg" open={open} onClose={handleSubmit}>
                 <DialogTitle>Staff Entry</DialogTitle>
@@ -173,7 +127,7 @@ function StaffEntry() {
                     <Box
                       component="form"
                       sx={{
-                        '& .MuiTextField-root': { m: 2, width: '100ch' },
+                        "& .MuiTextField-root": { m: 2, width: "100ch" },
                       }}
                       noValidate
                       autoComplete="off"
@@ -188,7 +142,8 @@ function StaffEntry() {
                           onChange={(e) =>
                             setFormData({ ...formData, name: e.target.value })
                           }
-                        /><br></br>
+                        />
+                        <br></br>
                         <TextField
                           required
                           id="outlined-required"
@@ -204,9 +159,14 @@ function StaffEntry() {
                           sx={{ width: 300 }}
                           value={formData.department}
                           onChange={(e) =>
-                            setFormData({ ...formData, department: e.target.value })
+                            setFormData({
+                              ...formData,
+                              department: e.target.value,
+                            })
                           }
-                          renderInput={(params) => <TextField {...params} label="Department" />}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Department" />
+                          )}
                         />
                         <TextField
                           required
@@ -256,7 +216,6 @@ function StaffEntry() {
                 </DialogActions>
               </Dialog>
             </Card>
-
           </Grid>
         </Grid>
       </MDBox>
@@ -266,4 +225,3 @@ function StaffEntry() {
 }
 
 export default StaffEntry;
-

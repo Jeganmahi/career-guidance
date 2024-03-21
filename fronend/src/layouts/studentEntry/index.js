@@ -25,11 +25,8 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import {useState,useEffect} from 'react';
-import DataTable from "examples/Tables/DataTable";
-
+import { useState, useEffect } from 'react';
 // Data
-import Data from "layouts/studentEntry/data/authorsTableData";
 import MDButton from "components/MDButton";
 //modal
 import Dialog from '@mui/material/Dialog';
@@ -39,8 +36,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { Autocomplete } from "@mui/material";
+//component import
+import StudentEntryTable from "./data/studentEntryTable";
 function StudentEntry() {
-  
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -50,24 +49,24 @@ function StudentEntry() {
   const handleClose = () => {
     setOpen(false);
   };
-  const Department=[
-    {label:"Computer science and engineering",value:"cse"},
-    {label:"Information Technology",value:"IT"},
-    {label:"Artificial Intelligence and Machine Learning",value:"AIML"},
-    {label:"Artificial Intelligence and Data Science",value:"AIDS"},
-    {label:"Civil engineering",value:"Civil"},
-    {label:"Electronics communications and Engineering",value:"ECE"},
-    {label:"Electronical and Electronics Engineering",value:"EEE"},
-    {label:"Mechanical Engineering",value:"MECH"},
-    {label:"Computer Science and Buisness Systems",value:"CSBS"},
-    {label:"Master of Buisness Administration",value:"MBA"},
-    {label:"Master of Computer Administration",value:"MCA"}
+  const Department = [
+    { label: "Computer science and engineering", value: "cse" },
+    { label: "Information Technology", value: "IT" },
+    { label: "Artificial Intelligence and Machine Learning", value: "AIML" },
+    { label: "Artificial Intelligence and Data Science", value: "AIDS" },
+    { label: "Civil engineering", value: "Civil" },
+    { label: "Electronics communications and Engineering", value: "ECE" },
+    { label: "Electronical and Electronics Engineering", value: "EEE" },
+    { label: "Mechanical Engineering", value: "MECH" },
+    { label: "Computer Science and Buisness Systems", value: "CSBS" },
+    { label: "Master of Buisness Administration", value: "MBA" },
+    { label: "Master of Computer Administration", value: "MCA" }
   ];
-  const Year=[
-    {label:"I",value:"I"},
-    {label:"II",value:"II"},
-    {label:"III",value:"III"},
-    {label:"IV",value:"IV"}
+  const Year = [
+    { label: "I", value: "I" },
+    { label: "II", value: "II" },
+    { label: "III", value: "III" },
+    { label: "IV", value: "IV" }
   ]
   const [formData, setFormData] = useState({
     name: "",
@@ -76,8 +75,8 @@ function StudentEntry() {
     year: "",
     domain: "",
 
-   });
-   const [studentData, setStudentData] = useState([]);
+  });
+  const [studentData, setStudentData] = useState([]);
   useEffect(() => {
     const studentFetch = async () => {
       try {
@@ -90,25 +89,7 @@ function StudentEntry() {
     }
     studentFetch();
   }, [studentData])
-  const studentFetch = async () => {
-    try {
-      const response = await fetch(`http://localhost:5001/studentData`);
-      const result = await response.json();
-      setStudentData(result);
-    } catch (error) {
-      console.error("Error fetching test data:", error);
-    }
-  }
-  const handleDelete = async (ID) => {
-    try {
-      const response = await fetch(`http://localhost:5001/studentDelete/${ID}`);
-      const result = await response.json();
-      studentFetch();
-    } catch (error) {
-      console.error("Error fetching  awareness program:", error);
-    }
-  };
-   const handleSubmit = async () => {
+  const handleSubmit = async () => {
     console.log(formData);
     try {
       const response = await fetch(`http://localhost:5001/studentAdd`, {
@@ -127,29 +108,6 @@ function StudentEntry() {
     setOpen(false);
 
   }
-  const columns=[
-    { Header: "Name", accessor: "name", width: "45%", align: "left" },
-    { Header: "Staff ID", accessor: "id", align: "left" },
-    { Header: "email", accessor: "email", align: "center" },
-    { Header: "Domain", accessor: "domain", align: "center" },
-    { Header: "Action", accessor: "action", align: "center" },
-  ]
-
-  
-  const rows = studentData.map(data => ({
-    name: data.name,
-    id:data.regno,
-    email: data.department, 
-    year:data.year,// Add logic to calculate difficulty if neede
-    domain: data.Domain,
-    action: (
-      <MDBox>
-        <MDButton  onClick={() => handleDelete(data.regno)} color="error">
-          Delete
-        </MDButton>
-      </MDBox>
-    ),
-  }));
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -178,69 +136,63 @@ function StudentEntry() {
                 </MDButton>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+                <StudentEntryTable studentData={studentData} />
               </MDBox>
               <Dialog maxWidth="lg" open={open} onClose={handleClose}>
                 <DialogTitle>Student entry</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                        <Box
-                                component="form"
-                                sx={{
-                                  '& .MuiTextField-root': { m: 2, width: '100ch' },
-                                }}
-                                noValidate
-                                autoComplete="off"
-                              >
-                            <div>
-                                <TextField
-                                  required
-                                  id="outlined-required"
-                                  label="Name"
-                                  placeholder="Name"
-                                  value={formData.name}
+                    <Box
+                      component="form"
+                      sx={{
+                        '& .MuiTextField-root': { m: 2, width: '100ch' },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <div>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          label="Name"
+                          placeholder="Name"
+                          value={formData.name}
                           onChange={(e) =>
                             setFormData({ ...formData, name: e.target.value })
                           }
-                                /><br></br>
-                                <TextField
-                                  required
-                                  id="outlined-required"
-                                  label="Register Number"
-                                  placeholder="12345678"
-                                  value={formData.Regno}
+                        /><br></br>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          label="Register Number"
+                          placeholder="12345678"
+                          value={formData.Regno}
                           onChange={(e) =>
                             setFormData({ ...formData, Regno: e.target.value })
                           }
-                                />
-                                <Autocomplete
-                                id="combo-box-demo"
-                                options={Department}
-                                sx={{ width: 300 }}
-                                values={formData.department}
+                        />
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={Department}
+                          sx={{ width: 300 }}
+                          values={formData.department}
                           onChange={(e) =>
                             setFormData({ ...formData, department: e.target.value })
                           }
-                                renderInput={(params) => <TextField {...params} label="Department" />}
-                                />
-                                 <Autocomplete
-                                id="combo-box-demo"
-                                options={Year}
-                                sx={{ width: 300 }}
-                                values={formData.year}
-                                onChange={(e) =>
-                                  setFormData({ ...formData, year: e.target.value })
-                                }
-                                renderInput={(params) => <TextField {...params} label="Year" />}
-                                />
-                            </div>
-                          </Box>
+                          renderInput={(params) => <TextField {...params} label="Department" />}
+                        />
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={Year}
+                          sx={{ width: 300 }}
+                          values={formData.year}
+                          onChange={(e) =>
+                            setFormData({ ...formData, year: e.target.value })
+                          }
+                          renderInput={(params) => <TextField {...params} label="Year" />}
+                        />
+                      </div>
+                    </Box>
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -250,7 +202,7 @@ function StudentEntry() {
                 </DialogActions>
               </Dialog>
             </Card>
-            
+
           </Grid>
         </Grid>
       </MDBox>
