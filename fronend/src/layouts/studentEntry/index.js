@@ -41,6 +41,7 @@ import StudentEntryTable from "./data/studentEntryTable";
 function StudentEntry() {
 
   const [open, setOpen] = useState(false);
+  
 
   const handleOpen = () => {
     setOpen(true);

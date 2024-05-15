@@ -98,14 +98,14 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  {
-    type: "All",
-    name: "Change Password",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
+  // {
+  //   type: "All",
+  //   name: "Change Password",
+  //   key: "sign-in",
+  //   icon: <Icon fontSize="small">login</Icon>,
+  //   route: "/authentication/sign-in",
+  //   component: <SignIn />,
+  // },
 ];
 
 export default routes;

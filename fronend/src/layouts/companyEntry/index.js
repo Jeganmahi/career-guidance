@@ -25,7 +25,7 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import DataTable from "examples/Tables/DataTable";
 // Data
 import CompanyEntry from "layouts/companyEntry/companyEntry.js";
@@ -40,9 +40,30 @@ import TextField from '@mui/material/TextField';
 import { Autocomplete } from "@mui/material";
 
 function CompanyData() {
-  const { columns, rows } = CompanyEntry();
+ 
 
+  const [formData, setFormData] = useState({
+    cname: "",
+    role: "",
+    eligibility: "",
+    open_date: "",
+    close_date: "",
+
+  });
   const [open, setOpen] = useState(false);
+  const [CompanyEntryData,setCompanyEntryData ] = useState([]);
+  useEffect(() => {
+    const companyFetch = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/companyData`);
+        const result = await response.json();
+        setCompanyEntryData(result);
+      } catch (error) {
+        console.error("Error fetching test data:", error);
+      }
+    };
+    companyFetch();
+  }, [CompanyEntryData]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -51,25 +72,32 @@ function CompanyData() {
   const handleClose = () => {
     setOpen(false);
   };
-  const Department=[
-    {label:"Computer science and engineering",value:"cse"},
-    {label:"Information Technology",value:"IT"},
-    {label:"Artificial Intelligence and Machine Learning",value:"AIML"},
-    {label:"Artificial Intelligence and Data Science",value:"AIDS"},
-    {label:"Civil engineering",value:"Civil"},
-    {label:"Electronics communications and Engineering",value:"ECE"},
-    {label:"Electronical and Electronics Engineering",value:"EEE"},
-    {label:"Mechanical Engineering",value:"MECH"},
-    {label:"Computer Science and Buisness Systems",value:"CSBS"},
-    {label:"Master of Buisness Administration",value:"MBA"},
-    {label:"Master of Computer Administration",value:"MCA"}
-  ];
-  const Year=[
-    {label:"I",value:"I"},
-    {label:"II",value:"II"},
-    {label:"III",value:"III"},
-    {label:"IV",value:"IV"}
-  ]
+  const handleSubmit = async () => {
+    console.log(formData)
+    try {
+      const response = await fetch(`http://localhost:5001/companyAdd`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const result = await response.json();
+      alert("success");
+      setOpen(false);
+      setFormData({
+        cname: "",
+        role: "",
+        eligibility: "",
+        open_date: "",
+        close_date: "",
+
+      })
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -97,63 +125,69 @@ function CompanyData() {
                   Add new offer
                 </MDButton>
               </MDBox>
-              <MDBox pt={3}>
-              <div style={{ height: 400, width: '100%' }}>
-              <DataTable
-                table={{ columns, rows }}
-                isSorted={false}
-                entriesPerPage={true}
-                showTotalEntries={true}
-                noEndBorder
-              />
-            </div>
-              </MDBox>
+              <CompanyEntry companyData={CompanyEntryData}/>
               <Dialog maxWidth="lg" open={open} onClose={handleClose}>
                 <DialogTitle>Modal Title</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                        <Box
-                                component="form"
-                                sx={{
-                                  '& .MuiTextField-root': { m: 2, width: '100ch' },
-                                }}
-                                noValidate
-                                autoComplete="off"
-                              >
-                            <div>
-                                <TextField
-                                  required
-                                  id="outlined-required"
-                                  label="Name"
-                                  placeholder="Name"
-                                /><br></br>
-                                <TextField
-                                  required
-                                  id="outlined-required"
-                                  label="Register Number"
-                                  placeholder="12345678"
-                                />
-                                <Autocomplete
-                                id="combo-box-demo"
-                                options={Department}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Department" />}
-                                />
-                                 <Autocomplete
-                                id="combo-box-demo"
-                                options={Year}
-                                sx={{ width: 300 }}
-                                renderInput={(params) => <TextField {...params} label="Year" />}
-                                />
-                            </div>
-                          </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        '& .MuiTextField-root': { m: 2, width: '100ch' },
+                      }}
+                      noValidate
+                      autoComplete="off"
+
+                    >
+
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Compmay name"
+                        placeholder="Company name"
+                        value={formData.cname}
+                        onChange={(e) => { setFormData({ ...formData, cname: e.target.value }) }}
+                      /><br></br>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Role"
+                        value={formData.role}
+                        onChange={(e) => { setFormData({ ...formData, role: e.target.value }) }}
+                        placeholder="Role"
+                      />
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Eligibility"
+                        placeholder="Eligibility"
+                        value={formData.eligibility}
+                        onChange={(e) => { setFormData({ ...formData, eligibility: e.target.value }) }}
+                      />
+                      <TextField
+                        required
+                        id="outlined-required"
+                        type="date"
+                        label="Open date"
+                        placeholder="Open date"
+                        value={formData.open_date}
+                        onChange={(e) => { setFormData({ ...formData, open_date: e.target.value }) }}
+                      />
+                      <TextField
+                        required
+                        id="outlined-required"
+                        type="date"
+                        label="End date"
+                        placeholder="end date"
+                        value={formData.close_date}
+                        onChange={(e) => { setFormData({ ...formData, close_date: e.target.value }) }}
+                      />
+
+                    </Box>
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <MDButton onClick={handleClose} color="primary">
-                    Cancel
-                  </MDButton>
-                  <MDButton onClick={handleClose} color="primary" autoFocus>
+                  <MDButton onClick={handleSubmit} color="primary" autoFocus>
                     Save
                   </MDButton>
                 </DialogActions>

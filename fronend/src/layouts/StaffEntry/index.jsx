@@ -10,7 +10,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import { useState, useEffect } from "react";
-import DataTable from "examples/Tables/DataTable";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Data
 import MDButton from "components/MDButton";
@@ -21,13 +21,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { Autocomplete } from "@mui/material";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 // components
 import StaffEntryTable from "./data/StaffEntryTable";
 function StaffEntry() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
   const [formData, setFormData] = useState({
     name: "",
@@ -50,46 +56,30 @@ function StaffEntry() {
       });
       const result = await response.json();
       alert("success");
+      staffFetch();
     } catch (error) {
       console.log(error);
     }
     setOpen(false);
   };
-  const Department = [
-    { label: "Computer science and engineering", value: "cse" },
-    { label: "Information Technology", value: "IT" },
-    { label: "Artificial Intelligence and Machine Learning", value: "AIML" },
-    { label: "Artificial Intelligence and Data Science", value: "AIDS" },
-    { label: "Civil engineering", value: "Civil" },
-    { label: "Electronics communications and Engineering", value: "ECE" },
-    { label: "Electronical and Electronics Engineering", value: "EEE" },
-    { label: "Mechanical Engineering", value: "MECH" },
-    { label: "Computer Science and Buisness Systems", value: "CSBS" },
-    { label: "Master of Buisness Administration", value: "MBA" },
-    { label: "Master of Computer Administration", value: "MCA" },
-  ];
-  const handleDelete = async (ID) => {
-    try {
-      const response = await fetch(`http://localhost:5001/staffDelete/${ID}`);
-      const result = await response.json();
-      staffData();
-    } catch (error) {
-      console.error("Error fetching  awareness program:", error);
-    }
-  };
+
   const [staffData, setStaffData] = useState([]);
   useEffect(() => {
-    const staffFetch = async () => {
-      try {
-        const response = await fetch(`http://localhost:5001/staffData`);
-        const result = await response.json();
-        setStaffData(result);
-      } catch (error) {
-        console.error("Error fetching test data:", error);
-      }
-    };
+    
     staffFetch();
   }, [staffData]);
+  const staffFetch = async () => {
+    try {
+      const response = await fetch(`http://localhost:5001/staffData`);
+      const result = await response.json();
+      setStaffData(result);
+    } catch (error) {
+      console.error("Error fetching test data:", error);
+    }
+  };
+  const handleChange = (e) => {
+    setFormData({ ...formData, department: e.target.value });
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -120,7 +110,7 @@ function StaffEntry() {
               <MDBox pt={3}>
                 <StaffEntryTable staffData={staffData} />
               </MDBox>
-              <Dialog maxWidth="lg" open={open} onClose={handleSubmit}>
+              <Dialog maxWidth="lg" open={open} onClose={handleClose}>
                 <DialogTitle>Staff Entry</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
@@ -133,6 +123,7 @@ function StaffEntry() {
                       autoComplete="off"
                     >
                       <div>
+                        {/* Name */}
                         <TextField
                           required
                           id="outlined-required"
@@ -143,7 +134,8 @@ function StaffEntry() {
                             setFormData({ ...formData, name: e.target.value })
                           }
                         />
-                        <br></br>
+                        <br />
+                        {/* Staff ID */}
                         <TextField
                           required
                           id="outlined-required"
@@ -153,39 +145,63 @@ function StaffEntry() {
                             setFormData({ ...formData, id: e.target.value })
                           }
                         />
-                        <Autocomplete
-                          id="combo-box-demo"
-                          options={Department}
-                          sx={{ width: 300 }}
-                          value={formData.department}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              department: e.target.value,
-                            })
-                          }
-                          renderInput={(params) => (
-                            <TextField {...params} label="Department" />
-                          )}
-                        />
+                        <br />
+                        {/* Method for Test Creation */}
+                        <FormControl
+                          variant="outlined"
+                          sx={{ marginLeft: "20px", width: "640px" }}
+                        >
+                          <InputLabel>Method for test creation</InputLabel>
+                          <Select
+                            label="Bank Type"
+                            value={formData.department}
+                            onChange={handleChange}
+                            variant="outlined"
+                            sx={{
+                              height: "50px",
+                              width: "900px",
+                              marginBottom: "10px",
+                            }}
+                            style={{ backgroundColor: "white" }}
+                          >
+                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="cse">cse</MenuItem>
+                            <MenuItem value="IT">IT</MenuItem>
+                            <MenuItem value="AIML">AIML</MenuItem>
+                            <MenuItem value="AIDS">AIDS</MenuItem>
+                            <MenuItem value="Civil">Civil</MenuItem>
+                            <MenuItem value="ECE">ECE</MenuItem>
+                            <MenuItem value="EEE">EEE</MenuItem>
+                            <MenuItem value="MECH">MECH</MenuItem>
+                            <MenuItem value="CSBS">CSBS</MenuItem>
+                            <MenuItem value="MBA">MBA</MenuItem>
+                            <MenuItem value="MCA">MCA</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <br />
+                        {/* Contact Number */}
                         <TextField
                           required
                           id="outlined-required"
-                          label="contact Number"
+                          label="Contact Number"
                           value={formData.number}
                           onChange={(e) =>
                             setFormData({ ...formData, number: e.target.value })
                           }
                         />
+                        <br />
+                        {/* Staff Email */}
                         <TextField
                           required
                           id="outlined-required"
-                          label="staff email"
+                          label="Staff Email"
                           value={formData.email}
                           onChange={(e) =>
                             setFormData({ ...formData, email: e.target.value })
                           }
                         />
+                        <br />
+                        {/* Date of Joining */}
                         <TextField
                           required
                           id="outlined-required"
@@ -196,10 +212,12 @@ function StaffEntry() {
                             setFormData({ ...formData, DOJ: e.target.value })
                           }
                         />
+                        <br />
+                        {/* Domain Name */}
                         <TextField
                           required
                           id="outlined-required"
-                          label="Domain name"
+                          label="Domain Name"
                           value={formData.domain}
                           onChange={(e) =>
                             setFormData({ ...formData, domain: e.target.value })
@@ -210,8 +228,9 @@ function StaffEntry() {
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <MDButton onClick={handleSubmit} color="primary" autoFocus>
-                    Save
+                  {/* Submit Button */}
+                  <MDButton color="info" onClick={handleSubmit}>
+                    Submit
                   </MDButton>
                 </DialogActions>
               </Dialog>
@@ -219,7 +238,7 @@ function StaffEntry() {
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
+     
     </DashboardLayout>
   );
 }

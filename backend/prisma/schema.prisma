@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model company_offers {
+  cname       String @db.VarChar(255)
+  role        String @db.VarChar(255)
+  eligibility String @db.VarChar(255)
+  uid         Int    @id @default(autoincrement())
+  open_date   String @db.VarChar(255)
+  close_date  String @db.VarChar(255)
+}
+
+model po_table {
+  id      Int    @id @default(autoincrement())
+  name    String @db.VarChar(255)
+  dob     String @db.VarChar(255)
+  doj     String @db.VarChar(255)
+  email   String @db.VarChar(255)
+  phone   String @db.VarChar(255)
+  address String @db.VarChar(255)
+  college String @db.VarChar(255)
+}
+
+model staff_details {
+  uid          Int    @default(autoincrement())
+  staff_name   String @db.VarChar(255)
+  staff_id     String @db.VarChar(255)
+  staff_phone  String @db.VarChar(255)
+  staff_email  String @db.VarChar(255)
+  Domain       String @db.VarChar(255)
+  DOJ          String @db.VarChar(255)
+  college_name String @db.VarChar(255)
+  department   String @db.VarChar(255)
+
+  @@id([uid, staff_id])
+}
+
+model student_details {
+  uid          Int    @default(autoincrement())
+  name         String @db.VarChar(255)
+  regno        String @db.VarChar(255)
+  department   String @db.VarChar(255)
+  year         String @db.VarChar(255)
+  domain       String @db.VarChar(255)
+  college_name String @db.VarChar(255)
+
+  @@id([uid, regno])
+}

@@ -1,17 +1,4 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -22,15 +9,58 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
+import { useState, useEffect } from "react";
 
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-
+import SchoolIcon from '@mui/icons-material/School';
+import PeopleIcon from '@mui/icons-material/People';
+import GroupIcon from '@mui/icons-material/Group';
 
 function Dashboard() {
-  
+  const [college, setCollege] = useState("");
+  const [count, setCount] = useState("");
+  const [studentCount, setStudentCount] = useState("");
+  const name = "Jegan"
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/fetchCollege/${name}`);
+        const jsondata = await response.json();
+        setCollege(jsondata[0].college);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+
+    fetchStudentCount();
+  }, []);
+  const fetchStudentCount = async () => {
+    try {
+      const response = await fetch(`http://localhost:5001/studentCount`);
+      const { count } = await response.json(); // Extract the count value
+      setStudentCount(count); // Set only the count value to the state
+    } catch (error) {
+      console.error('Error fetching count:', error);
+    }
+  };
+  useEffect(() => {
+
+    fetchCount();
+  }, []);
+  const fetchCount = async () => {
+    try {
+      const response = await fetch(`http://localhost:5001/staffCount`);
+      const { count } = await response.json(); // Extract the count value
+      setCount(count); // Set only the count value to the state
+    } catch (error) {
+      console.error('Error fetching count:', error);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -43,25 +73,18 @@ function Dashboard() {
                 color="dark"
                 icon="person"
                 title="WELCOME"
-                count={"Jegan"}
-                percentage={{
-                  color: "success",
-                  label: "Placement officier",
-                }}
+                count={name}
+
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
+                icon={<SchoolIcon />}
+                title="College name"
+                count={college}
+
               />
             </MDBox>
           </Grid>
@@ -69,14 +92,10 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
+                icon={<GroupIcon />}
+                title="staff Count"
+                count={count}
+
               />
             </MDBox>
           </Grid>
@@ -84,20 +103,16 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
+                icon={<PeopleIcon />}
+                title="Student Count"
+                count={studentCount}
+
               />
             </MDBox>
           </Grid>
         </Grid>
       </MDBox>
-      <Footer />
+
     </DashboardLayout>
   );
 }

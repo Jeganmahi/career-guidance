@@ -18,93 +18,46 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
-
-// Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
 import MDButton from "components/MDButton";
+import DataTable from "examples/Tables/DataTable";
+export default function CompanyEntry({ companyData }) {
 
-export default function CompanyEntry() {
-  const ComName = ({ name }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDBox ml={5} lineHeight={1}>
-        <MDTypography display="block" variant="caption" color="text" fontWeight="bold">
-          {name}
-        </MDTypography>
+  const columns = [
+
+    { Header: "Company Name", accessor: "cname", align: "center" },
+    { Header: "Role", accessor: "Role", align: "center" },
+    { Header: "Eligibilty", accessor: "Eligibility", align: "center" },
+    { Header: "Required Skills", accessor: "Skills", align: "center" },
+    { Header: "EndDate", accessor: "EndDate", align: "center" },
+    { Header: "Action", accessor: "action", align: "center" },
+  ]
+  const rows = companyData.map(data => ({
+    cname: data.cname,
+    Role: data.role,
+    Eligibility: data.eligibility, // Add logic to calculate difficulty if neede
+    Skills: data.open_date,
+    EndDate: data.close_date, // Add logic to calculate creation date if needed
+    action: (
+      <MDBox>
+        <MDButton color="error">
+          Delete
+        </MDButton>
       </MDBox>
+    ),
+  }));
+
+
+
+
+  return (
+    <MDBox pt={3}>
+      <DataTable
+        table={{ columns, rows }}
+        isSorted={false}
+        entriesPerPage={false}
+        showTotalEntries={false}
+        noEndBorder
+      />
     </MDBox>
-  );
-  
-
-  const Role = ({ title }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="bold">
-        {title}
-      </MDTypography>
-    </MDBox>
-  );
-  const ComNam = ({ title }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="bold">
-        {title}
-      </MDTypography>
-    </MDBox>
-  );
-
-  return {
-// Inside the component where the error occurserform the operation that's causing the error
-// For example:
-
-
-    columns: [
-    
-      { Header: "Company Name", accessor: "comNam", align: "center" },
-      { Header: "Role", accessor: "Role", align: "center" },
-
-      { Header: "Eligibilty", accessor: "Eligibility", align: "center" },
-      { Header: "Required Skills", accessor: "Skills", align: "center" },
-      {Header:"EndDate",accessor:"EndDate",align:"center"},
-      { Header: "Status", accessor: "Status", align: "center" },
-    ],
-
-    rows: [
-      {
-
-        comNam: <ComNam title="TATA"/>,
-        Role: <Role title="software developer"/>,
-        Eligibility: (
-          <MDBox display="flex" alignItems="center" lineHeight={1}>
-          <MDBox ml={5} lineHeight={1}>
-            <MDTypography display="block" variant="caption" color="text" fontWeight="bold">
-              above 60% in all
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        ),
-        Skills:(
-          <MDBox display="flex" alignItems="center" lineHeight={1}>
-          <MDBox ml={5} lineHeight={1}>
-            <MDTypography display="block" variant="caption" color="text" fontWeight="bold">
-              c, java
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        ),
-        EndDate: (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                    22/2/2024
-            </MDTypography>
-        ),
-        Status: (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              open
-            </MDTypography>
-          ),
-      },
-    
-    ],
-  };
+  )
 }
