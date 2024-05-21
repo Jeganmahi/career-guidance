@@ -53,7 +53,10 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
+import { SessionContext, useSession } from "./SessionContext";
+
 export default function App() {
+  const {role} = useSession()
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -150,7 +153,11 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="Material Dashboard 2"
-            routes={routes}
+            routes={routes.filter((route)=>{
+              if(role == route.role){
+                console.log(route)
+              }
+              return route.role==role})}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -161,7 +168,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
       </Routes>
     </ThemeProvider>
   );
